@@ -36,39 +36,60 @@ class AppGui:
 
         
     def configMenu():
+        
         # Создаем новое окно
         configMenu = tkinter.Tk()
         configMenu.resizable(False, False)
         # builderConfigMenu = pygubu.Builder().add_from_file('C:/Users/Dimasik/Projects/Python3_5_2/SimpleChat/configMenu.ui')
             # Так не правильно; так мы присваиваем, объекту builderConfigMenu, результат 
             # работы метода add_from_file. 
-            # Я думал так сначала объект builderConfigMenu инициализируется с помощью определения его
+            # Я думал так: сначала объект builderConfigMenu инициализируется с помощью определения его
             # класса, а потом для него вызывается метод add_from_file.
-        # Так правильно
+        # Так правильно 
         builderConfigMenu = pygubu.Builder()
         builderConfigMenu.add_from_file('C:/Users/Dimasik/Projects/Python3_5_2/SimpleChat/configMenu.ui')
         
         # Достаем окошко конфига и рисуем его на окно configMenu
         configFrame = builderConfigMenu.get_object('configMenu', configMenu)
-        
+        # Достаём все элементы 
+        autoSearchState = builderConfigMenu.get_object('autoSearchState', configFrame)
+        autoSearchUseID = builderConfigMenu.get_object('autoSearchUseID', configFrame)
+        entryID = builderConfigMenu.get_object('entryID', configFrame)
+        entryIP = builderConfigMenu.get_object('entryIP', configFrame)
+        entryPort = builderConfigMenu.get_object('entryPort', configFrame)
+        entryMask = builderConfigMenu.get_object('entryMask', configFrame)
         confirmButton = builderConfigMenu.get_object('confirmButton', configFrame)
-       
-        def setServerConfig():
-            serverConf = Server('ILovePython!', '192.168.1.1', 10000)
-       
-        confirmButton.config(command = setServerConfig)
+        # Кнопка выбора "роли" Auto; Client; Server.
+        selectRole = builderConfigMenu.get_object('selectRole', configFrame)
+        selectRole_menu = tkinter.Menu(selectRole, tearoff = False)
+        selectRole['menu'] = selectRole_menu 
+        
+        def checkButton(state):
+            if state == 'Auto':
+                selectRole.config(text = 'Auto')
+                print(state, '\n')
+            elif state == 'Client':
+                selectRole['text'] = 'Client'
+                print(state, '\n')
+            elif state == 'Server':
+                selectRole['text'] = 'Server'
+                print(state, '\n')
 
+        # stateAuto = checkButton('Auto')
+        # stateClient = checkButton('Client')
+        # stateServer = checkButton('Server')
+
+        
+        selectRole_menu.add_command(label = 'Auto', command = checkButton)
+        selectRole_menu.add_command(label = 'Client', command = checkButton)
+        selectRole_menu.add_command(label = 'Server', command = checkButton)
         
         
         # Запускаем обработчик окна
         configMenu.mainloop()
 
-class Server:
-    def __init__(self, appID, appIP, appPort):
-        self.appID = appID
-        self.appIP = appIP
-        self.appPort = appPort
-        print(self.appID, self.appIP, self.appPort)
+class NetworkCSA:
+    pass
 
 
 
