@@ -2,34 +2,12 @@
 <interface>
   <object class="ttk.Frame" id="configMenu">
     <property name="borderwidth">10</property>
-    <property name="height">250</property>
-    <property name="width">250</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
     <layout>
       <property name="column">0</property>
       <property name="propagate">True</property>
       <property name="row">0</property>
-      <columns>
-        <column id="0">
-          <property name="pad">9</property>
-        </column>
-        <column id="1">
-          <property name="minsize">0</property>
-          <property name="pad">0</property>
-          <property name="weight">0</property>
-        </column>
-      </columns>
-      <rows>
-        <row id="0">
-          <property name="minsize">0</property>
-          <property name="pad">0</property>
-          <property name="weight">0</property>
-        </row>
-        <row id="1">
-          <property name="minsize">0</property>
-          <property name="pad">0</property>
-          <property name="weight">0</property>
-        </row>
-      </rows>
     </layout>
     <child>
       <object class="ttk.Button" id="confirmButton">
@@ -45,12 +23,23 @@
       </object>
     </child>
     <child>
+      <object class="ttk.Checkbutton" id="autoSearchState">
+        <property name="text" translatable="yes">AutoSearch</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+          <property name="sticky">w</property>
+        </layout>
+      </object>
+    </child>
+    <child>
       <object class="ttk.Checkbutton" id="autoSearchUseID">
         <property name="text" translatable="yes">Use ID</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
-          <property name="row">0</property>
+          <property name="row">2</property>
           <property name="sticky">w</property>
         </layout>
       </object>
@@ -97,12 +86,12 @@
     </child>
     <child>
       <object class="ttk.Menubutton" id="selectRole">
-        <property name="text" translatable="yes">AutoSearch</property>
-        <property name="width">12</property>
+        <property name="text" translatable="yes">Auto</property>
         <layout>
           <property name="column">1</property>
+          <property name="ipadx">9</property>
           <property name="propagate">True</property>
-          <property name="row">0</property>
+          <property name="row">1</property>
         </layout>
       </object>
     </child>

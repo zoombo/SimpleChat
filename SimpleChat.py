@@ -1,5 +1,5 @@
 import tkinter
-#import tkinter.ttk
+# import tkinter.ttk
 import pygubu
 import netifaces
 
@@ -37,7 +37,6 @@ class AppGui:
 
         
     def configMenu():
-        
         # Создаем новое окно
         configMenu = tkinter.Tk()
         configMenu.resizable(False, False)
@@ -53,7 +52,6 @@ class AppGui:
         # Достаем окошко конфига и рисуем его на окно configMenu
         configFrame = builderConfigMenu.get_object('configMenu', configMenu)
         # Достаём все элементы 
-        autoSearchState = builderConfigMenu.get_object('autoSearchState', configFrame)
         autoSearchUseID = builderConfigMenu.get_object('autoSearchUseID', configFrame)
         entryID = builderConfigMenu.get_object('entryID', configFrame)
         entryIP = builderConfigMenu.get_object('entryIP', configFrame)
@@ -65,25 +63,48 @@ class AppGui:
         selectRole_menu = tkinter.Menu(selectRole, tearoff = False)
         selectRole['menu'] = selectRole_menu 
         
-        # Азбучное замыкание. Возвращает функцию которая помнит в какое состояние 
+        # Тут должна быть функция которая изменяет состояние entryID 
+        # в зависимости от состояния кнопки
+        def setStateEntryID():
+            if autoSearchUseID['variable'] == autoSearchUseID['onvalue']:
+                entryID.config(state = 'normal')
+            else:
+                entryID.config(state = 'disable')
+                
+
+
+        autoSearchUseID.config(command = setStateEntryID)
+
+        # Простенькое замыкание. Возвращает функцию которая помнит в какое состояние 
         # нужно выставить параметр 'text' менюшки selectRole. 
         # Без замыканий наглядней, с ними эффективней.
         # TODO: допилить выставление состояния остальных полей и Checkbutton'ов.
         def checkButton(state):
             def setRole():
+                # Сразу меняем надпись на кнопке
                 selectRole.config(text = state)
                 if state == 'Server':
-                    entryIP.config(text = NetworkCSA.getIPthisPC())
+                    autoSearchUseID.config(state = 'normal')
+                    entryID.config(state = 'normal')
+                    entryIP.delete(0, 100)
+                    entryIP.insert(0, NetworkCSA.getIPthisPC())
                     entryIP.config(state = 'disable')
-                    # entryPort.config(state = 'disable')
                     entryMask.config(state = 'disable')
+                elif state == 'Client':
+                    entryIP.delete(0, 100)
+                    entryIP.insert(0, NetworkCSA.getIPthisPC())
+                    entryIP.config(state = 'disable')
+                    entryMask.config(state = 'disable')
+                elif state == 'Auto':
+                    pass
+            
             return setRole
 
-        stateAuto = checkButton('Auto')
+        stateAuto = checkButton('AutoSearch')
         stateClient = checkButton('Client')
         stateServer = checkButton('Server')
         
-        selectRole_menu.add_command(label = 'Auto', command = stateAuto)
+        selectRole_menu.add_command(label = 'AutoSearch', command = stateAuto)
         selectRole_menu.add_command(label = 'Client', command = stateClient)
         selectRole_menu.add_command(label = 'Server', command = stateServer)
         
@@ -96,7 +117,6 @@ class NetworkCSA:
         ifacesThisPC = netifaces.interfaces()
         ipThisPC = netifaces.ifaddresses(ifacesThisPC[0]) 
         clearIP = ((ipThisPC[2])[0])['addr']
-        print(clearIP)
         return clearIP
 
 rootWindow = tkinter.Tk()
