@@ -1,6 +1,7 @@
 import tkinter
 #import tkinter.ttk
 import pygubu
+import netifaces
 
 
 class AppGui:
@@ -10,7 +11,7 @@ class AppGui:
         # Подключаем Рисовалку гуев
         builder = pygubu.Builder() 
         # Загружаем в Рисовалку файл с описание что и где рисовать 
-        builder.add_from_file('C:/Users/Dimasik/Projects/Python3_5_2/SimpleChat/MainGUI.ui')
+        builder.add_from_file('MainGUI.ui')
         # Загружаем объект mainFrame гуев в наше главное окно mainWindow  
         mainFrame = builder.get_object('mainFrame', mainFrame)
         #builder.connect_callbacks(mainFrame)
@@ -47,7 +48,7 @@ class AppGui:
             # класса, а потом для него вызывается метод add_from_file.
         # Так правильно 
         builderConfigMenu = pygubu.Builder()
-        builderConfigMenu.add_from_file('C:/Users/Dimasik/Projects/Python3_5_2/SimpleChat/configMenu.ui')
+        builderConfigMenu.add_from_file('configMenu.ui')
         
         # Достаем окошко конфига и рисуем его на окно configMenu
         configFrame = builderConfigMenu.get_object('configMenu', configMenu)
@@ -64,34 +65,39 @@ class AppGui:
         selectRole_menu = tkinter.Menu(selectRole, tearoff = False)
         selectRole['menu'] = selectRole_menu 
         
+        # Азбучное замыкание. Возвращает функцию которая помнит в какое состояние 
+        # нужно выставить параметр 'text' менюшки selectRole. 
+        # Без замыканий наглядней, с ними эффективней.
+        # TODO: допилить выставление состояния остальных полей и Checkbutton'ов.
         def checkButton(state):
-            if state == 'Auto':
-                selectRole.config(text = 'Auto')
-                print(state, '\n')
-            elif state == 'Client':
-                selectRole['text'] = 'Client'
-                print(state, '\n')
-            elif state == 'Server':
-                selectRole['text'] = 'Server'
-                print(state, '\n')
+            def setRole():
+                selectRole.config(text = state)
+                if state == 'Server':
+                    entryIP.config(text = NetworkCSA.getIPthisPC())
+                    entryIP.config(state = 'disable')
+                    # entryPort.config(state = 'disable')
+                    entryMask.config(state = 'disable')
+            return setRole
 
-        # stateAuto = checkButton('Auto')
-        # stateClient = checkButton('Client')
-        # stateServer = checkButton('Server')
-
+        stateAuto = checkButton('Auto')
+        stateClient = checkButton('Client')
+        stateServer = checkButton('Server')
         
-        selectRole_menu.add_command(label = 'Auto', command = checkButton)
-        selectRole_menu.add_command(label = 'Client', command = checkButton)
-        selectRole_menu.add_command(label = 'Server', command = checkButton)
+        selectRole_menu.add_command(label = 'Auto', command = stateAuto)
+        selectRole_menu.add_command(label = 'Client', command = stateClient)
+        selectRole_menu.add_command(label = 'Server', command = stateServer)
         
         
         # Запускаем обработчик окна
         configMenu.mainloop()
 
 class NetworkCSA:
-    pass
-
-
+    def getIPthisPC():
+        ifacesThisPC = netifaces.interfaces()
+        ipThisPC = netifaces.ifaddresses(ifacesThisPC[0]) 
+        clearIP = ((ipThisPC[2])[0])['addr']
+        print(clearIP)
+        return clearIP
 
 rootWindow = tkinter.Tk()
 AppGui(rootWindow)
