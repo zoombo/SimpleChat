@@ -5,35 +5,35 @@ import netifaces
 
 
 class AppGui:
-    def __init__(self, mainFrame):
-        #mainFrame = mainFrame
-        mainFrame.resizable(False, False)
+    def __init__(self, rootWindow):
+        self.mainFrame = rootWindow
+        self.mainFrame.resizable(False, False)
         # Подключаем Рисовалку гуев
-        builder = pygubu.Builder() 
-        # Загружаем в Рисовалку файл с описание что и где рисовать 
-        builder.add_from_file('MainGUI.ui')
+        self.mainFrameBuilder = pygubu.Builder() 
+        # Загружаем в Рисовалку файл с описанием что и где рисовать 
+        self.mainFrameBuilder.add_from_file('MainGUI.ui')
         # Загружаем объект mainFrame гуев в наше главное окно mainWindow  
-        mainFrame = builder.get_object('mainFrame', mainFrame)
+        self.mainFrame = self.mainFrameBuilder.get_object('mainFrame', self.mainFrame)
         #builder.connect_callbacks(mainFrame)
 
         # Добываем объекты типа Text и прикрепляем соответствующие Scrollbar'ы
-            # Тут окно вывода изображения
-        messageViewer = builder.get_object('messageViewer', mainFrame)
-        messageViewer_scroll = builder.get_object('messageViewer_scroll', mainFrame)
-                # Прикрепляем скролл
-        messageViewer_scroll['command'] = messageViewer.yview
-        messageViewer['yscrollcommand'] = messageViewer_scroll.set
+            # Тут окно вывода сообщений + scrollbar
+        self.messageViewer = self.mainFrameBuilder.get_object('messageViewer', self.mainFrame)
+        self.messageViewer_scroll = self.mainFrameBuilder.get_object('messageViewer_scroll', self.mainFrame)
+                # Прикрепляем scrollbar к окну 
+        self.messageViewer_scroll['command'] = self.messageViewer.yview
+        self.messageViewer['yscrollcommand'] = self.messageViewer_scroll.set
             # Тут окно подключенных пользователей
-        membersList = builder.get_object('membersList', mainFrame)
-        membersList_scroll = builder.get_object('membersList_scroll', mainFrame)
+        self.membersList = self.mainFrameBuilder.get_object('membersList', self.mainFrame)
+        self.membersList_scroll = self.mainFrameBuilder.get_object('membersList_scroll', self.mainFrame)
                 # Прикрепляем скролл
-        membersList_scroll['command'] = membersList.yview
-        membersList['yscrollcommand'] = membersList_scroll.set
+        self.membersList_scroll['command'] = self.membersList.yview
+        self.membersList['yscrollcommand'] = self.membersList_scroll.set
 
         # Достаем кнопку конфигурации 
-        configButton = builder.get_object('configButton', mainFrame)
+        self.configButton = self.mainFrameBuilder.get_object('configButton', self.mainFrame)
             # Кнопка конфигурации вызывает метод в котором рисуется новое меню  
-        configButton.config(command = AppGui.configMenu)
+        self.configButton.config(command = AppGui.configMenu)
 
         
     def configMenu():
@@ -119,6 +119,6 @@ class NetworkCSA:
         clearIP = ((ipThisPC[2])[0])['addr']
         return clearIP
 
-rootWindow = tkinter.Tk()
-AppGui(rootWindow)
-rootWindow.mainloop()
+rootW = tkinter.Tk()
+AppGui(rootW)
+rootW.mainloop()
