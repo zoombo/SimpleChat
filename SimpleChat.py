@@ -33,56 +33,59 @@ class AppGui:
         # Достаем кнопку конфигурации 
         self.configButton = self.mainFrameBuilder.get_object('configButton', self.mainFrame)
             # Кнопка конфигурации вызывает метод в котором рисуется новое меню  
-        self.configButton.config(command = AppGui.configMenu)
+        self.configButton.config(command = self.configMenu)
 
         
-    def configMenu():
+    def configMenu(self):
         # Создаем новое окно
-        configMenu = tkinter.Tk()
-        configMenu.resizable(False, False)
+        self.configMenuFrame = tkinter.Tk()
+        self.configMenuFrame.resizable(False, False)
         # builderConfigMenu = pygubu.Builder().add_from_file('C:/Users/Dimasik/Projects/Python3_5_2/SimpleChat/configMenu.ui')
             # Так не правильно; так мы присваиваем, объекту builderConfigMenu, результат 
             # работы метода add_from_file. 
             # Я думал так: сначала объект builderConfigMenu инициализируется с помощью определения его
             # класса, а потом для него вызывается метод add_from_file.
         # Так правильно 
-        builderConfigMenu = pygubu.Builder()
-        builderConfigMenu.add_from_file('configMenu.ui')
+        self.builderConfigMenu = pygubu.Builder()
+        self.builderConfigMenu.add_from_file('configMenu.ui')
         
         # Достаем окошко конфига и рисуем его на окно configMenu
-        configFrame = builderConfigMenu.get_object('configMenu', configMenu)
+        self.configMenuFrame = self.builderConfigMenu.get_object('configMenu', self.configMenuFrame)
         # Достаём все элементы 
-        autoSearchUseID = builderConfigMenu.get_object('autoSearchUseID', configFrame)
-        entryID = builderConfigMenu.get_object('entryID', configFrame)
-        entryIP = builderConfigMenu.get_object('entryIP', configFrame)
-        entryPort = builderConfigMenu.get_object('entryPort', configFrame)
-        entryMask = builderConfigMenu.get_object('entryMask', configFrame)
-        confirmButton = builderConfigMenu.get_object('confirmButton', configFrame)
+        self.autoSearchUseID = self.builderConfigMenu.get_object('autoSearchUseID', self.configMenuFrame)
+        self.entryID = self.builderConfigMenu.get_object('entryID', self.configMenuFrame)
+        self.entryIP = self.builderConfigMenu.get_object('entryIP', self.configMenuFrame)
+        self.entryPort = self.builderConfigMenu.get_object('entryPort', self.configMenuFrame)
+        self.entryMask = self.builderConfigMenu.get_object('entryMask', self.configMenuFrame)
+        self.confirmButton = self.builderConfigMenu.get_object('confirmButton', self.configMenuFrame)
         # Кнопка выбора "роли" Auto; Client; Server.
-        selectRole = builderConfigMenu.get_object('selectRole', configFrame)
-        selectRole_menu = tkinter.Menu(selectRole, tearoff = False)
-        selectRole['menu'] = selectRole_menu 
+        self.selectRole = self.builderConfigMenu.get_object('selectRole', self.configMenuFrame)
+        self.selectRole_menu = tkinter.Menu(self.selectRole, tearoff = False)
+        self.selectRole['menu'] = self.selectRole_menu 
         
-        # Тут должна быть функция которая изменяет состояние entryID 
+        # Тут должна быть функция(метод) которая изменяет состояние entryID 
         # в зависимости от состояния кнопки
         def setStateEntryID():
-            if autoSearchUseID['variable'] == autoSearchUseID['onvalue']:
-                entryID.config(state = 'normal')
-            else:
-                entryID.config(state = 'disable')
-                
-
-
-        autoSearchUseID.config(command = setStateEntryID)
+            if self.intState.get() == 1:
+                self.entryID.config(state = 'normal')
+            elif self.intState.get() == 0:
+                self.entryID.config(state = 'disabled')                
+        # Тут указываем переменную (self.intState) для Checkbutton'ины --> autoSearchUseID 
+        # !!! и указываем окно(master = self.configMenuFrame) в котором будет отрабатываться 
+        # наша Checkbutton'ина иначе, при изменении состояния, значение переменной меняться не будет, 
+        # т.к. Checkbutton'ина будет плавать в окне configMenuFrame а её переменная хз где.
+        self.intState = tkinter.BooleanVar(master = self.configMenuFrame)
+        # А тут определяем саму Checkbutton'ину и её параметрами.
+        self.autoSearchUseID.config(variable = self.intState, command = setStateEntryID, onvalue = 1, offvalue = 0)
 
         # Простенькое замыкание. Возвращает функцию которая помнит в какое состояние 
         # нужно выставить параметр 'text' менюшки selectRole. 
-        # Без замыканий наглядней, с ними эффективней.
+        # Без замыканий наглядней, но их тоже надо освоить.
         # TODO: допилить выставление состояния остальных полей и Checkbutton'ов.
         def checkButton(state):
             def setRole():
                 # Сразу меняем надпись на кнопке
-                selectRole.config(text = state)
+                self.selectRole.config(text = state)
                 if state == 'Server':
                     autoSearchUseID.config(state = 'normal')
                     entryID.config(state = 'normal')
@@ -111,6 +114,10 @@ class AppGui:
         
         # Запускаем обработчик окна
         configMenu.mainloop()
+
+    
+        
+
 
 class NetworkCSA:
     def getIPthisPC():
