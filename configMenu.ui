@@ -8,16 +8,6 @@
       <property name="column">0</property>
       <property name="propagate">True</property>
       <property name="row">0</property>
-      <columns>
-        <column id="0">
-          <property name="pad">9</property>
-        </column>
-        <column id="1">
-          <property name="minsize">0</property>
-          <property name="pad">0</property>
-          <property name="weight">0</property>
-        </column>
-      </columns>
       <rows>
         <row id="0">
           <property name="minsize">0</property>
@@ -30,6 +20,16 @@
           <property name="weight">0</property>
         </row>
       </rows>
+      <columns>
+        <column id="0">
+          <property name="pad">9</property>
+        </column>
+        <column id="1">
+          <property name="minsize">0</property>
+          <property name="pad">0</property>
+          <property name="weight">0</property>
+        </column>
+      </columns>
     </layout>
     <child>
       <object class="ttk.Button" id="confirmButton">
@@ -77,7 +77,7 @@
     </child>
     <child>
       <object class="ttk.Entry" id="entryPort">
-        <property name="text" translatable="yes">Port</property>
+        <property name="text" translatable="yes">Port(default:55555)</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>

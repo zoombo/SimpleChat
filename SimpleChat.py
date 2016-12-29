@@ -105,27 +105,46 @@ class AppGui:
                     self.entryIP.config(state = 'disable')
                     self.entryMask.delete(0, 100)
                     self.entryMask.config(state = 'disable')
+                    self.entryPort.delete(0,100)
+                    self.entryPort.insert(0, '55555')
                 elif state == 'Client':
-                    pass
-                elif state == 'Auto':
-                    pass
-            
+                    # ID, IP, PORT = enable
+                    autoSearchUseIDSetOff()
+                    self.entryIP.delete(0, 100)
+                    self.entryIP.config(state = 'normal')
+                    self.entryPort.delete(0, 100)
+                    self.entryPort.insert(0, '55555')
+                    self.entryPort.config(state = 'normal')
+                elif state == 'AutoSearch':
+                    autoSearchUseIDSetOff()
+                    self.entryIP.delete(0, 100)
+                    self.entryIP.config(state = 'normal')
+                    self.entryPort.delete(0, 100)
+                    self.entryPort.insert(0, '55555')
+                    self.entryPort.config(state = 'normal')
             return setRole
 
+        # Присваиваем сгенерированные замыкания соответствующим пунктам
         self.stateAuto = checkButton('AutoSearch')
         self.stateClient = checkButton('Client')
         self.stateServer = checkButton('Server')
         
+        # Добавляем пункты выпадаюшего меню 
+        # и команды-замыкания срабатывающие при выборе соотв. пункта
         self.selectRole_menu.add_command(label = 'AutoSearch', command = self.stateAuto)
         self.selectRole_menu.add_command(label = 'Client', command = self.stateClient)
         self.selectRole_menu.add_command(label = 'Server', command = self.stateServer)
         
-        
+
+        def confirmButtonClick():
+            pass
+
+        self.confirmButton.config(command = self.confirmButtonClick)
+
         # Запускаем обработчик окна
         self.configMenuFrame.mainloop()
 
-    
-        
+   
 
 
 class NetworkCSA:
