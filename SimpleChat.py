@@ -139,7 +139,7 @@ class AppGui:
         def confirmButtonClick():
             pass
 
-        self.confirmButton.config(command = self.confirmButtonClick)
+        self.confirmButton.config(command = confirmButtonClick)
 
         # Запускаем обработчик окна
         self.configMenuFrame.mainloop()
