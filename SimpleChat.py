@@ -6,6 +6,7 @@ import netifaces
 
 class AppGui:
     def __init__(self, rootWindow):
+        # Создаем главное окно. rootWindow должен быть объектом класса tkinter.Tk()
         self.mainFrame = rootWindow
         self.mainFrame.resizable(False, False)
         # Подключаем Рисовалку гуев
@@ -68,15 +69,25 @@ class AppGui:
         def setStateEntryID():
             if self.intState.get() == 1:
                 self.entryID.config(state = 'normal')
+                self.entryID.insert(0, 'ID')
             elif self.intState.get() == 0:
-                self.entryID.config(state = 'disabled')                
+                self.entryID.delete(0, 100)
+                self.entryID.config(state = 'disabled')
+                                
+        # Когда вызывается эту функция деактивируется Checkbutton и поле entryID
+        def autoSearchUseIDSetOff():
+            self.intState.set(0)
+            setStateEntryID()
+
+
         # Тут указываем переменную (self.intState) для Checkbutton'ины --> autoSearchUseID 
-        # !!! и указываем окно(master = self.configMenuFrame) в котором будет отрабатываться 
+        # !!! и указываем ПЕРЕМЕННОЙ окно(master = self.configMenuFrame) в котором будет отрабатываться 
         # наша Checkbutton'ина иначе, при изменении состояния, значение переменной меняться не будет, 
         # т.к. Checkbutton'ина будет плавать в окне configMenuFrame а её переменная хз где.
         self.intState = tkinter.BooleanVar(master = self.configMenuFrame)
-        # А тут определяем саму Checkbutton'ину и её параметрами.
+        # А тут определяем саму Checkbutton'ину и её параметры.
         self.autoSearchUseID.config(variable = self.intState, command = setStateEntryID, onvalue = 1, offvalue = 0)
+
 
         # Простенькое замыкание. Возвращает функцию которая помнит в какое состояние 
         # нужно выставить параметр 'text' менюшки selectRole. 
@@ -86,34 +97,32 @@ class AppGui:
             def setRole():
                 # Сразу меняем надпись на кнопке
                 self.selectRole.config(text = state)
+                # На каждое состояние роли выставляем доступные пункты настроек
                 if state == 'Server':
-                    autoSearchUseID.config(state = 'normal')
-                    entryID.config(state = 'normal')
-                    entryIP.delete(0, 100)
-                    entryIP.insert(0, NetworkCSA.getIPthisPC())
-                    entryIP.config(state = 'disable')
-                    entryMask.config(state = 'disable')
+                    autoSearchUseIDSetOff()
+                    self.entryIP.delete(0, 100)
+                    self.entryIP.insert(0, NetworkCSA.getIPthisPC())
+                    self.entryIP.config(state = 'disable')
+                    self.entryMask.delete(0, 100)
+                    self.entryMask.config(state = 'disable')
                 elif state == 'Client':
-                    entryIP.delete(0, 100)
-                    entryIP.insert(0, NetworkCSA.getIPthisPC())
-                    entryIP.config(state = 'disable')
-                    entryMask.config(state = 'disable')
+                    pass
                 elif state == 'Auto':
                     pass
             
             return setRole
 
-        stateAuto = checkButton('AutoSearch')
-        stateClient = checkButton('Client')
-        stateServer = checkButton('Server')
+        self.stateAuto = checkButton('AutoSearch')
+        self.stateClient = checkButton('Client')
+        self.stateServer = checkButton('Server')
         
-        selectRole_menu.add_command(label = 'AutoSearch', command = stateAuto)
-        selectRole_menu.add_command(label = 'Client', command = stateClient)
-        selectRole_menu.add_command(label = 'Server', command = stateServer)
+        self.selectRole_menu.add_command(label = 'AutoSearch', command = self.stateAuto)
+        self.selectRole_menu.add_command(label = 'Client', command = self.stateClient)
+        self.selectRole_menu.add_command(label = 'Server', command = self.stateServer)
         
         
         # Запускаем обработчик окна
-        configMenu.mainloop()
+        self.configMenuFrame.mainloop()
 
     
         
